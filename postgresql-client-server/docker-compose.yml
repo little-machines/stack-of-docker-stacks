@@ -1,0 +1,30 @@
+version: "3.7"
+services:
+  server:
+    image: postgres:11-alpine@sha256:c5f0e2a15997cb55b3448a2b70a3944b69f79c06968551ff1989428eaee41fcd
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  client:
+    image: postgres:11-alpine@sha256:c5f0e2a15997cb55b3448a2b70a3944b69f79c06968551ff1989428eaee41fcd
+    environment:
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGHOST: server
+    depends_on:
+      - server
+    command: |
+      /bin/bash -eux -c "
+        sleep 10s
+        pg_isready --timeout=120
+        psql --command='
+          DROP TABLE IF EXISTS foo;
+          DROP TABLE IF EXISTS bar;
+          CREATE TABLE foo(id INTEGER);
+          CREATE TABLE bar(id INTEGER);
+          INSERT INTO foo(id) (SELECT generate_series(1,100) AS id);
+          INSERT INTO bar(id) (SELECT generate_series(1,100) AS id);
+        '
+        pg_dump --jobs=2 --no-synchronized-snapshots --format=directory --file=dump --table=foo --table=bar && zcat dump/*.gz && cat dump/toc.dat
+      "
