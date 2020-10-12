@@ -1,0 +1,34 @@
+version: "3.7"
+services:
+  api:
+    image: infrastructureascode/hello-world:latest
+    deploy:
+      resources:
+        limits:
+          memory: 32Mi
+        reservations:
+          memory: 32Mi
+      restart_policy:
+        condition: on-failure
+    ports:
+    - target: 8080
+      published: 8001
+      protocol: tcp
+      mode: host
+
+  client:
+    image: lucashalbert/curl:latest@sha256:8747635fac964ed7d21cdc9f00f4778208770f9ddfdde2e1949634a274125ea8
+    depends_on:
+    - api
+    command:
+    - --silent
+    - http://api:8080
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 64Mi
+        reservations:
+          memory: 64Mi
+      restart_policy:
+        condition: on-failure
