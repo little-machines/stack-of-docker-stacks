@@ -22,10 +22,12 @@ services:
     - api
     command:
     - --silent
-    - --head
+    - --verbose
+    - --output
+    - /dev/null
     - http://api:8080
     deploy:
-      replicas: 2
+      replicas: 3
       resources:
         limits:
           memory: 32Mi
