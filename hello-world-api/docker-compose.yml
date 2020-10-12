@@ -22,13 +22,14 @@ services:
     - api
     command:
     - --silent
+    - --head
     - http://api:8080
     deploy:
-      replicas: 1
+      replicas: 2
       resources:
         limits:
-          memory: 64Mi
+          memory: 32Mi
         reservations:
-          memory: 64Mi
+          memory: 32Mi
       restart_policy:
         condition: on-failure
