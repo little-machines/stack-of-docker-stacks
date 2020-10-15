@@ -19,3 +19,11 @@ status:
 logs:
 	$(service) logs $(stack_name)_api
 	$(service) logs $(stack_name)_client
+
+cycle:
+	make delete
+	sleep 60
+	make create
+	sleep 120
+	make status
+	make logs
