@@ -1,3 +1,4 @@
+# https://github.com/docker/compose/issues/374#issuecomment-284695410
 version: "3.7"
 services:
   web:
@@ -31,10 +32,10 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "128Mi"
+          memory: "256m"
         reservations:
           cpus: "1"
-          memory: "128Mi"
+          memory: "256m"
       restart_policy:
         condition: "on-failure"
         delay: "20s"
@@ -68,7 +69,13 @@ services:
       POSTGRES_PASSWORD: p0stgres
     deploy:
       restart_policy:
-        condition: "on-failure"
+        condition: "any"
         delay: "10s"
         max_attempts: 3
         window: "120s"
+    healthcheck:
+      test: "PGUSER=postgres PGPASSWORD=p0stgres pg_isready --timeout=300"
+      interval: "10s"
+      timeout: "10s"
+      retries: 10
+      start_period: "300s"
