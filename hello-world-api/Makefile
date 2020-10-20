@@ -1,5 +1,5 @@
 include ../common.mk
-stack_name = hello-world-api
+stack_name = $(shell basename $(shell pwd))
 
 info:
 	$(docker) info
