@@ -1,0 +1,74 @@
+version: "3.7"
+services:
+  web:
+    image: "ghcr.io/vincetse/todos-api"
+    environment:
+      PORT: "3000"
+      RAILS_ENV: "production"
+      DATABASE_URL: "postgres://postgres:p0stgres@db/app"
+      SECRET_KEY_BASE: "450c29d2711c276c61d341bc666c87e995470f4c834ba68dea5cd0b9bca3c023a2f8de44b0c9e2122ec65e7272a8aab2fde9f9b62225a6ee60bea11504536a45"
+      WORKER_BOOT_TIMEOUT: 300
+    ports:
+    - "3000:3000"
+    command:
+    - "foreman"
+    - "run"
+    - "web"
+    depends_on:
+    - "db"
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://localhost:3000/health_check"]
+    #  interval: "2m"
+    #  timeout: "300s"
+    #  retries: 3
+    #  start_period: "240s"
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: "10s"
+        order: "start-first"
+      resources:
+        limits:
+          cpus: "1"
+          memory: "128Mi"
+        reservations:
+          cpus: "1"
+          memory: "128Mi"
+      restart_policy:
+        condition: "on-failure"
+        delay: "20s"
+        max_attempts: 3
+        window: "120s"
+
+  migrate:
+    image: "ghcr.io/vincetse/todos-api"
+    environment:
+      RAILS_ENV: "production"
+      DATABASE_URL: "postgres://postgres:p0stgres@db/app"
+      SECRET_KEY_BASE: "450c29d2711c276c61d341bc666c87e995470f4c834ba68dea5cd0b9bca3c023a2f8de44b0c9e2122ec65e7272a8aab2fde9f9b62225a6ee60bea11504536a45"
+    command:
+    - "foreman"
+    - "run"
+    - "release"
+    depends_on:
+    - "db"
+    deploy:
+      restart_policy:
+        condition: "on-failure"
+        delay: "10s"
+        max_attempts: 3
+        window: "120s"
+
+  db:
+    image: "ghcr.io/infrastructure-as-code/postgres:11-alpine"
+    environment:
+      POSTGRES_DB: "app"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: p0stgres
+    deploy:
+      restart_policy:
+        condition: "on-failure"
+        delay: "10s"
+        max_attempts: 3
+        window: "120s"
