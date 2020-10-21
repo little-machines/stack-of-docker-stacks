@@ -27,3 +27,7 @@ cycle:
 	sleep 120
 	make status
 	make logs
+
+client:
+	curl -v http://$(manager_host):8001/health
+	curl -v http://$(manager_host):8001
