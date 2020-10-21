@@ -30,7 +30,7 @@ services:
     - /dev/null
     - http://api:8080
     deploy:
-      replicas: 3
+      replicas: 0
       resources:
         limits:
           memory: 32Mi
