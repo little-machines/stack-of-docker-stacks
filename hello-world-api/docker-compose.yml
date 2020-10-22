@@ -12,9 +12,9 @@ services:
         condition: on-failure
     ports:
     - target: 8080
-      published: 8001
+      published: ${SERVICE_PORT}
       protocol: tcp
-      mode: host
+      mode: ingress
 
   client:
     # arm32v6

@@ -5,6 +5,7 @@ info:
 	$(docker) info
 
 create:
+	SERVICE_PORT=$(hello_world_api_port) \
 	$(stack) deploy \
 		--compose-file docker-compose.yml \
 		$(stack_name)
@@ -29,5 +30,5 @@ cycle:
 	make logs
 
 client:
-	curl -v http://$(manager_host):8001/health
-	curl -v http://$(manager_host):8001
+	curl -v http://$(manager_host):$(hello_world_api_port)/health
+	curl -v http://$(manager_host):$(hello_world_api_port)
