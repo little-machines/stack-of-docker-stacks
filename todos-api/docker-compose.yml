@@ -3,6 +3,8 @@ version: "3.7"
 services:
   web:
     image: "ghcr.io/vincetse/todos-api"
+    networks:
+    - default
     environment:
       PORT: "3000"
       RAILS_ENV: "production"
@@ -47,6 +49,8 @@ services:
 
   migrate:
     image: "ghcr.io/vincetse/todos-api"
+    networks:
+    - default
     environment:
       RAILS_ENV: "production"
       DATABASE_URL: "postgres://postgres:p0stgres@db/app"
@@ -66,6 +70,8 @@ services:
 
   db:
     image: "ghcr.io/infrastructure-as-code/postgres:11-alpine"
+    networks:
+    - default
     environment:
       POSTGRES_DB: "app"
       POSTGRES_USER: postgres
