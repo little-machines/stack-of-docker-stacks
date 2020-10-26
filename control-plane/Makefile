@@ -2,13 +2,10 @@ include ../common.mk
 stack_name = $(shell basename $(shell pwd))
 
 info:
-	$(docker) info
+	$(docker) $@
 
-stacks:
-	$(docker) stack ls
-
-nodes:
-	$(docker) node ls
+stack node network:
+	$(docker) $@ ls
 
 ps:
 	$(eval nodes = $(shell $(docker) node ls --format='{{.Hostname}}'))
