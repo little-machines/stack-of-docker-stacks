@@ -13,6 +13,9 @@ create:
 delete:
 	$(stack) rm $(stack_name)
 
+purge: delete
+	$(docker) volume rm --force $(stack_name)_dbdata
+
 status:
 	$(stack) services $(stack_name)
 	$(stack) ps $(stack_name)
