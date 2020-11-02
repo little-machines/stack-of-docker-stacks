@@ -5,38 +5,14 @@ services:
     deploy:
       resources:
         limits:
-          memory: 64Mi
+          memory: 64m
         reservations:
-          memory: 64Mi
+          memory: 64m
       restart_policy:
         condition: on-failure
     ports:
+    #- "${SERVICE_PORT}:8080"
     - target: 8080
       published: ${SERVICE_PORT}
       protocol: tcp
       mode: ingress
-
-  client:
-    # arm32v6
-    image: lucashalbert/curl:latest@sha256:b6c32182ff7b837fa0e446c822ab493183e1fecae2f275cbf9cf796af5240939
-    # arm64v8
-    #image: lucashalbert/curl:latest@sha256:dfab5b7dbfaebd76111e6464c6e0c1dabed356915ce5d97bd080b411dec12ae3
-    depends_on:
-    - api
-    command:
-    - --silent
-    - --verbose
-    - --output
-    - /dev/null
-    - http://api:8080
-    deploy:
-      replicas: 0
-      resources:
-        limits:
-          memory: 32Mi
-        reservations:
-          memory: 32Mi
-      restart_policy:
-        condition: on-failure
-    healthcheck:
-      start_period: 300s
