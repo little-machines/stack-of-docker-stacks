@@ -1,0 +1,76 @@
+version: "3.7"
+services:
+
+  mq:
+    # arm32v6
+    image: rabbitmq:3-alpine@sha256:34c0a87ef590fb462fa206ae9357150a111ffeeba3098ddbd14fb54f0e7b61e6
+    networks:
+    - mynet
+
+  producer:
+    depends_on:
+    - mq
+    image: ghcr.io/vincetse/event-stream:event-processor
+    networks:
+    - mynet
+    command:
+    - /event-producer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --routing-key
+    - hello-for-processor-a
+    - --event-count
+    - "3600"
+
+  processor_a:
+    depends_on:
+    - mq
+    image: ghcr.io/vincetse/event-stream:event-processor
+    networks:
+    - mynet
+    command:
+    - /event-processor
+    - --consumer-uri
+    - amqp://guest:guest@mq:5672
+    - --consumer-queue-name
+    - hello-for-processor-a
+    - --producer-uri
+    - amqp://guest:guest@mq:5672
+    - --producer-routing-key
+    - hello-for-processor-b
+
+  processor_b:
+    depends_on:
+    - mq
+    image: ghcr.io/vincetse/event-stream:event-processor
+    networks:
+    - mynet
+    command:
+    - /event-processor
+    - --consumer-uri
+    - amqp://guest:guest@mq:5672
+    - --consumer-queue-name
+    - hello-for-processor-b
+    - --producer-uri
+    - amqp://guest:guest@mq:5672
+    - --producer-routing-key
+    - hello-for-consumer
+
+  consumer:
+    depends_on:
+    - mq
+    image: ghcr.io/vincetse/event-stream:event-processor
+    networks:
+    - mynet
+    command:
+    - /event-consumer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --queue-name
+    - hello-for-consumer
+
+networks:
+  mynet:
+    external: false
+    driver: overlay
+    attachable: true
