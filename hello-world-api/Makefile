@@ -1,5 +1,6 @@
 include ../common.mk
 stack_name = $(shell basename $(shell pwd))
+replicas = 1
 
 info:
 	$(docker) info
@@ -19,6 +20,9 @@ purge: delete
 status:
 	$(stack) services $(stack_name)
 	$(stack) ps $(stack_name)
+
+scale:
+	$(service) scale $(stack_name)_api=$(replicas)
 
 logs:
 	$(service) logs $(stack_name)_api
