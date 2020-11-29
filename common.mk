@@ -6,5 +6,5 @@ service = $(docker) service
 
 # port assignments
 hello_world_api_port = 8001
-todos_api_port = 3000
+rails_todos_api_port = 3000
 buffalo_todos_api_port = 3010

@@ -8,7 +8,7 @@ services:
     environment:
       PORT: "3000"
       RAILS_ENV: "production"
-      DATABASE_URL: "postgres://postgres:p0stgres@db/app"
+      DATABASE_URL: "postgres://postgres:p0stgres@db/app?reconnect=true&connect_timeout=5"
       SECRET_KEY_BASE: "450c29d2711c276c61d341bc666c87e995470f4c834ba68dea5cd0b9bca3c023a2f8de44b0c9e2122ec65e7272a8aab2fde9f9b62225a6ee60bea11504536a45"
       WORKER_BOOT_TIMEOUT: 300
     ports:
@@ -53,7 +53,7 @@ services:
     - default
     environment:
       RAILS_ENV: "production"
-      DATABASE_URL: "postgres://postgres:p0stgres@db/app"
+      DATABASE_URL: "postgres://postgres:p0stgres@db/app?reconnect=true&connect_timeout=5"
       SECRET_KEY_BASE: "450c29d2711c276c61d341bc666c87e995470f4c834ba68dea5cd0b9bca3c023a2f8de44b0c9e2122ec65e7272a8aab2fde9f9b62225a6ee60bea11504536a45"
     command:
     - "foreman"
