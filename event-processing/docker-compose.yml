@@ -6,11 +6,17 @@ services:
     image: rabbitmq:3-alpine@sha256:34c0a87ef590fb462fa206ae9357150a111ffeeba3098ddbd14fb54f0e7b61e6
     networks:
     - mynet
+    deploy:
+      restart_policy:
+        condition: none
 
   producer:
     depends_on:
     - mq
     image: ghcr.io/vincetse/event-stream:event-processor
+    deploy:
+      restart_policy:
+        condition: none
     networks:
     - mynet
     command:
@@ -20,12 +26,15 @@ services:
     - --routing-key
     - hello-for-processor-a
     - --event-count
-    - "3600"
+    - "999999999"
 
   processor_a:
     depends_on:
     - mq
     image: ghcr.io/vincetse/event-stream:event-processor
+    deploy:
+      restart_policy:
+        condition: none
     networks:
     - mynet
     command:
@@ -43,6 +52,9 @@ services:
     depends_on:
     - mq
     image: ghcr.io/vincetse/event-stream:event-processor
+    deploy:
+      restart_policy:
+        condition: none
     networks:
     - mynet
     command:
@@ -60,6 +72,9 @@ services:
     depends_on:
     - mq
     image: ghcr.io/vincetse/event-stream:event-processor
+    deploy:
+      restart_policy:
+        condition: none
     networks:
     - mynet
     command:
