@@ -1,0 +1,91 @@
+# https://github.com/docker/compose/issues/374#issuecomment-284695410
+version: "3.7"
+services:
+  web:
+    image: "ghcr.io/todos-api/buffalo:docker-image"
+    networks:
+    - default
+    environment:
+      PORT: "3000"
+      GO_ENV: "production"
+      DATABASE_URL: "postgres://postgres:p0stgres@db/app"
+    ports:
+    - target: 3000
+      published: ${SERVICE_PORT}
+      protocol: tcp
+      mode: ingress
+    entrypoint:
+    - "/bin/app"
+    depends_on:
+    - "db"
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://localhost:3000/health_check"]
+    #  interval: "2m"
+    #  timeout: "300s"
+    #  retries: 3
+    #  start_period: "240s"
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: "10s"
+        order: "start-first"
+      resources:
+        limits:
+          cpus: "1"
+          memory: "256m"
+        reservations:
+          cpus: "1"
+          memory: "256m"
+      restart_policy:
+        condition: "on-failure"
+        delay: "20s"
+        max_attempts: 10
+        window: "120s"
+
+  migrate:
+    image: "ghcr.io/todos-api/buffalo:docker-image"
+    networks:
+    - default
+    environment:
+      GO_ENV: "production"
+      DATABASE_URL: "postgres://postgres:p0stgres@db/app"
+    entrypoint:
+    - "/bin/app"
+    command:
+    - "migrate"
+    depends_on:
+    - "db"
+    deploy:
+      restart_policy:
+        condition: "on-failure"
+        delay: "10s"
+        max_attempts: 15
+        window: "120s"
+
+  db:
+    image: "ghcr.io/infrastructure-as-code/postgres:12-alpine"
+    networks:
+    - default
+    environment:
+      POSTGRES_DB: "app"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: p0stgres
+      PGDATA: "/var/lib/postgresql/data"
+    volumes:
+    - "dbdata2:/var/lib/postgresql/data"
+    deploy:
+      restart_policy:
+        condition: "any"
+        delay: "10s"
+        max_attempts: 3
+        window: "120s"
+    healthcheck:
+      test: "PGUSER=postgres PGPASSWORD=p0stgres pg_isready --timeout=300"
+      interval: "10s"
+      timeout: "10s"
+      retries: 10
+      start_period: "300s"
+
+volumes:
+  dbdata2:
