@@ -1,6 +1,7 @@
 include ../common.mk
 stack_name = $(shell basename $(shell pwd))
 service_port = $(rails_todos_api_port)
+base_url = http://$(manager_host):$(service_port)
 
 info:
 	$(docker) info
@@ -35,5 +36,5 @@ cycle:
 	make logs
 
 client:
-	curl -v http://$(manager_host):$(service_port)/health_check
-	curl -v http://$(manager_host):$(service_port)/todos
+	curl -v $(base_url)/health_check
+	curl -v $(base_url)/todos
