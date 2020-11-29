@@ -1,7 +1,8 @@
-include ../common.mk
-stack_name = $(shell basename $(shell pwd))
-service_port = $(rails_todos_api_port)
+include ../../common.mk
+stack_name = todos-api-$(shell basename $(shell pwd))
+service_port = $(buffalo_todos_api_port)
 base_url = http://$(manager_host):$(service_port)
+include ../todos.mk
 
 info:
 	$(docker) info
