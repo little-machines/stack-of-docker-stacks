@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  db:
+    image: "ghcr.io/infrastructure-as-code/postgres:11-alpine"
+    networks:
+    - "default"
+    - "dbnet"
+    environment:
+      POSTGRES_DB: "app"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "p0stgres"
+      PGDATA: "/var/lib/postgresql/data"
+    volumes:
+    - "dbdata:/var/lib/postgresql/data"
+    deploy:
+      restart_policy:
+        condition: "any"
+        delay: "10s"
+        max_attempts: 3
+        window: "120s"
+    healthcheck:
+      test: "PGUSER=postgres PGPASSWORD=p0stgres pg_isready --timeout=300"
+      interval: "10s"
+      timeout: "10s"
+      retries: 10
+      start_period: "300s"
+
+volumes:
+  dbdata:
+
+networks:
+  dbnet:
+    name: "todos-api-buffalo-dbnet"
+    driver: "overlay"
+    attachable: true

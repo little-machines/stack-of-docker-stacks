@@ -25,7 +25,6 @@ status:
 
 logs:
 	$(service) logs $(stack_name)_migrate
-	$(service) logs $(stack_name)_db
 	$(service) logs $(stack_name)_web
 
 cycle:

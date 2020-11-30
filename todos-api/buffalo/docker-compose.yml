@@ -4,11 +4,12 @@ services:
   web:
     image: "ghcr.io/todos-api/buffalo:docker-image"
     networks:
-    - default
+    - "default"
+    - "dbnet"
     environment:
       PORT: "3000"
       GO_ENV: "production"
-      DATABASE_URL: "postgres://postgres:p0stgres@db/app"
+      DATABASE_URL: "postgres://postgres:p0stgres@db/app?sslmode=require"
     ports:
     - target: 3000
       published: ${SERVICE_PORT}
@@ -46,10 +47,11 @@ services:
   migrate:
     image: "ghcr.io/todos-api/buffalo:docker-image"
     networks:
-    - default
+    - "default"
+    - "dbnet"
     environment:
       GO_ENV: "production"
-      DATABASE_URL: "postgres://postgres:p0stgres@db/app"
+      DATABASE_URL: "postgres://postgres:p0stgres@db/app?sslmode=require"
     entrypoint:
     - "/bin/app"
     command:
@@ -63,29 +65,10 @@ services:
         max_attempts: 15
         window: "120s"
 
-  db:
-    image: "ghcr.io/infrastructure-as-code/postgres:12-alpine"
-    networks:
-    - default
-    environment:
-      POSTGRES_DB: "app"
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: p0stgres
-      PGDATA: "/var/lib/postgresql/data"
-    volumes:
-    - "dbdata2:/var/lib/postgresql/data"
-    deploy:
-      restart_policy:
-        condition: "any"
-        delay: "10s"
-        max_attempts: 3
-        window: "120s"
-    healthcheck:
-      test: "PGUSER=postgres PGPASSWORD=p0stgres pg_isready --timeout=300"
-      interval: "10s"
-      timeout: "10s"
-      retries: 10
-      start_period: "300s"
-
 volumes:
   dbdata2:
+
+networks:
+  dbnet:
+    name: "todos-api-buffalo-dbnet"
+    external: true
