@@ -4,7 +4,8 @@ services:
   web:
     image: "ghcr.io/vincetse/todos-api"
     networks:
-    - default
+    - "default"
+    - "dbnet"
     environment:
       PORT: "3000"
       RAILS_ENV: "production"
@@ -50,7 +51,8 @@ services:
   migrate:
     image: "ghcr.io/vincetse/todos-api"
     networks:
-    - default
+    - "default"
+    - "dbnet"
     environment:
       RAILS_ENV: "production"
       DATABASE_URL: "postgres://postgres:p0stgres@db/app?reconnect=true&connect_timeout=5"
@@ -68,29 +70,7 @@ services:
         max_attempts: 3
         window: "120s"
 
-  db:
-    image: "ghcr.io/infrastructure-as-code/postgres:11-alpine"
-    networks:
-    - default
-    environment:
-      POSTGRES_DB: "app"
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: p0stgres
-      PGDATA: "/var/lib/postgresql/data"
-    volumes:
-    - "dbdata:/var/lib/postgresql/data"
-    deploy:
-      restart_policy:
-        condition: "any"
-        delay: "10s"
-        max_attempts: 3
-        window: "120s"
-    healthcheck:
-      test: "PGUSER=postgres PGPASSWORD=p0stgres pg_isready --timeout=300"
-      interval: "10s"
-      timeout: "10s"
-      retries: 10
-      start_period: "300s"
-
-volumes:
-  dbdata:
+networks:
+  dbnet:
+    name: "dbnet-jnOqGDiR"
+    external: true
