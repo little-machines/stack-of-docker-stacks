@@ -25,7 +25,7 @@ logs:
 client:
 	$(docker) run \
 		--rm \
-		--network dbnet \
+		--network todos-api-rails-dbnet \
 		--env PGSSLMODE=require \
 		--env PGUSER=postgres \
 		--env PGHOST=db \
