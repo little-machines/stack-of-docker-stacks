@@ -72,5 +72,5 @@ services:
 
 networks:
   dbnet:
-    name: "dbnet-jnOqGDiR"
+    name: "todos-api-rails-dbnet"
     external: true

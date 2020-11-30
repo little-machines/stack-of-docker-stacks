@@ -30,6 +30,6 @@ volumes:
 
 networks:
   dbnet:
-    name: "dbnet-jnOqGDiR"
+    name: "todos-api-rails-dbnet"
     driver: "overlay"
     attachable: true
