@@ -65,6 +65,23 @@ services:
         max_attempts: 15
         window: "120s"
 
+  client:
+    image: "ghcr.io/infrastructure-as-code/httpie"
+    networks:
+    - "default"
+    entrypoint:
+    - "/bin/watch"
+    command:
+    - "http"
+    - "GET"
+    - "http://web:${SERVICE_PORT}/health_check"
+    depends_on:
+    - "web"
+    deploy:
+      restart_policy:
+        condition: "on-failure"
+        delay: "60s"
+
 volumes:
   dbdata2:
 
