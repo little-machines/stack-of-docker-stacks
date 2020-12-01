@@ -36,5 +36,5 @@ cycle:
 	make logs
 
 client:
-	curl -v $(base_url)/health_check
-	curl -v $(base_url)/todos
+	http $(base_url)/health_check
+	http $(base_url)/todos
