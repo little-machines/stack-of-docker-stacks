@@ -74,12 +74,12 @@ services:
     command:
     - "http"
     - "GET"
-    - "http://web:${SERVICE_PORT}/health_check"
+    - "http://web:3000/health_check"
     depends_on:
     - "web"
     deploy:
       restart_policy:
-        condition: "on-failure"
+        condition: "any"
         delay: "60s"
 
 volumes:
