@@ -6,6 +6,7 @@ services:
     networks:
     - "default"
     - "dbnet"
+    - "internal"
     environment:
       PORT: "3000"
       GO_ENV: "production"
@@ -65,27 +66,11 @@ services:
         max_attempts: 15
         window: "120s"
 
-  client:
-    image: "ghcr.io/infrastructure-as-code/httpie"
-    networks:
-    - "default"
-    entrypoint:
-    - "/bin/watch"
-    command:
-    - "http"
-    - "GET"
-    - "http://web:3000/health_check"
-    depends_on:
-    - "web"
-    deploy:
-      restart_policy:
-        condition: "any"
-        delay: "60s"
-
-volumes:
-  dbdata2:
-
 networks:
   dbnet:
     name: "todos-api-buffalo-dbnet"
     external: true
+  internal:
+    name: "todos-api-buffalo-internal"
+    driver: "overlay"
+    attachable: true

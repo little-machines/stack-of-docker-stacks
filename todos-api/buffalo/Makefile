@@ -11,6 +11,7 @@ create:
 	SERVICE_PORT=$(service_port) \
 	$(stack) deploy \
 		--compose-file docker-compose.yml \
+		--prune \
 		$(stack_name)
 
 delete:
